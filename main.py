@@ -54,6 +54,7 @@ class Window(QMainWindow):
                 cur.execute(f"""INSERT INTO coffee(Name, Roasting, Type, Taste, Price, Size) 
                 VALUES('{self.lineEdit.text()}', '{self.lineEdit_2.text()}', '{self.lineEdit_3.text()}', 
                 '{self.lineEdit_4.text()}', {self.lineEdit_5.text()}, {self.lineEdit_6.text()})""").fetchall()
+                con.commit()
 
             else:
                 cur.execute(
@@ -65,17 +66,16 @@ class Window(QMainWindow):
                             Size = {self.lineEdit_6.text()}
                         WHERE Name = '{self.lineEdit.text()}'""").fetchall()
                 con.commit()
-                con = sqlite3.connect('coffee.sqlite')
-                cur = con.cursor()
-                cur.execute(f"""SELECT * FROM coffee""")
-                db = cur.fetchall()
-                self.tableWidget.setColumnCount(len(db[0]) - 1)
-                self.tableWidget.setRowCount(len(db))
-                for i, elemi in enumerate(db):
-                    for j, elemj in enumerate(elemi[1:]):
-                        self.tableWidget.setItem(i, j, QTableWidgetItem(elemj))
-                self.tableWidget.show()
-                con.close()
+            con = sqlite3.connect('coffee.sqlite')
+            cur = con.cursor()
+            cur.execute(f"""SELECT * FROM coffee""")
+            db = cur.fetchall()
+            self.tableWidget.setColumnCount(len(db[0]) - 1)
+            self.tableWidget.setRowCount(len(db))
+            for i, elemi in enumerate(db):
+                for j, elemj in enumerate(elemi[1:]):
+                    self.tableWidget.setItem(i, j, QTableWidgetItem(elemj))
+            con.close()
         else:
             self.label_8.setText('Заполните все поля')
 
